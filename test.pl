@@ -1,22 +1,14 @@
 %Remember to write down notes for each predicate (or in other words 'function')
 :- use_module(library(odbc)).
 
+%Use these to use the database server
 open :- odbc_connect('prolog_database', _, [alias(db)]).
 close :- odbc_disconnect(db).
 
-
 %Common predicate for reading input (So that stuff doesn't get confusing later)
 read_line(Line) :-
-    write('Enter'),
+    write('Enter '),
     read(Line).
-
-%Read Integers
-read_number(Input, Output) :-
-    read(Input),
-    ( number(Input) -> Output = Input;
-      float(Input) -> Output = Input;
-      write('Enter')
-    ).
 
 %Starts system; provides CRUD options
 begin :-
@@ -35,10 +27,9 @@ choice(1) :-
     writeln('Description of Product (List only its category)'),
     read_line(Description),
     writeln('Amount of Product in storage'),
-    read_number(Quantity, Quantity),
-    writeln(Quantity),
+    read(Quantity),
     writeln('Price of product'),
-    read_number(Price, Price),
+    read(Price),
     add_product(Name, Description, Quantity, Price),
     writeln('New product data successfully added.'), nl.
 
@@ -60,6 +51,6 @@ choice(5) :-
 
 add_product(Name, Description, Quantity, Price) :-
     open,
-    concat_atom(['INSERT INTO tbl_product VALUES (\'', Name, '\', \'', Description, '\', \'',Quantity, Price, '\')'], Query),
+    concat_atom(['INSERT INTO tbl_product VALUES (\'', Name, '\', \'', Description, '\', ', Quantity, ', ', Price, ')'], Query),
     odbc_query(db, Query),
     close.
