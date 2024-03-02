@@ -40,7 +40,14 @@ choice(2) :-
 
 %Update Function
 choice(3) :-
-    write('Bye now').
+    writeln('Specify product to update'),
+    read_line(Name),
+    writeln('Updated Quantity'),
+    read_line(Quantity),
+    writeln('Updated Price'),
+    read_line(Price),
+    update_product(Name, Quantity, Price),
+    writeln('Update complete.').
 
 %Delete Function
 choice(4) :-
@@ -67,3 +74,9 @@ read_product :-
     write('Quantity     :'), writeln(Quantity),
     write('Price        :'), writeln(Price),
     close.
+
+update_product(Name, Quantity, Price) :-
+  open,
+  concat_atom(['UPDATE tbl_product SET product_quantity = ', Quantity, ', product_price = ', Price, ' WHERE product_name = \'', Name, '\''], Query),
+  odbc_query(db, Query),
+  close.
