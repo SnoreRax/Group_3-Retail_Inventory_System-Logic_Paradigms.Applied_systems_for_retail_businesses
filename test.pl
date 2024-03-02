@@ -27,15 +27,16 @@ choice(1) :-
     writeln('Description of Product (List only its category)'),
     read_line(Description),
     writeln('Amount of Product in storage'),
-    read(Quantity),
+    read_line(Quantity),
     writeln('Price of product'),
-    read(Price),
+    read_line(Price),
     add_product(Name, Description, Quantity, Price),
     writeln('New product data successfully added.'), nl.
 
 %Read Function
 choice(2) :-
-    write('Hi there').
+    read_product,
+    nl.
 
 %Update Function
 choice(3) :-
@@ -53,4 +54,16 @@ add_product(Name, Description, Quantity, Price) :-
     open,
     concat_atom(['INSERT INTO tbl_product VALUES (\'', Name, '\', \'', Description, '\', ', Quantity, ', ', Price, ')'], Query),
     odbc_query(db, Query),
+    close.
+
+read_product :-
+    open,
+    findall(RName, odbc_query(db, 'SELECT product_name FROM tbl_product', row(RName)), Name),
+    findall(RDesc, odbc_query(db, 'SELECT product_description FROM tbl_product', row(RDesc)), Description),
+    findall(RQty, odbc_query(db, 'SELECT product_quantity FROM tbl_product', row(RQty)), Quantity),
+    findall(RPrc, odbc_query(db, 'SELECT product_price FROM tbl_product', row(RPrc)), Price),
+    write('Name         :'), writeln(Name),
+    write('Description  :'), writeln(Description),
+    write('Quantity     :'), writeln(Quantity),
+    write('Price        :'), writeln(Price),
     close.
