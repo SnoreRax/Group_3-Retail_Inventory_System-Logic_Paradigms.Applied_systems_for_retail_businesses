@@ -12,7 +12,6 @@ read_line(Line) :-
 
 %Starts system; provides CRUD options
 begin :-
-    repeat,
     writeln('Welcome to Generic Retails!'), writeln('Options:'), writeln('1. Add Product'), writeln('2. Show Products'),
     writeln('3. Update exisiting products'), writeln('4. Delete existing product'), writeln('5. Exit'),
     read_line(Line),
@@ -51,7 +50,10 @@ choice(3) :-
 
 %Delete Function
 choice(4) :-
-    write('Okay').
+    writeln('Specify product to delete'),
+    read_line(Name),
+    delete_product(Name),
+    writeln('Deletion successful.').
 
 %Exit
 choice(5) :-
@@ -80,3 +82,9 @@ update_product(Name, Quantity, Price) :-
   concat_atom(['UPDATE tbl_product SET product_quantity = ', Quantity, ', product_price = ', Price, ' WHERE product_name = \'', Name, '\''], Query),
   odbc_query(db, Query),
   close.
+
+delete_product(Name) :-
+    open,
+    concat_atom(['DELETE FROM tbl_product WHERE product_name = \'', Name, '\''], Query),
+    odbc_query(db, Query),
+    close.
